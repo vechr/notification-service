@@ -9,4 +9,5 @@ export default Object.freeze({
   EMAIL_PORT: env.get('EMAIL_PORT').required().asInt(),
   EMAIL_PASS: env.get('EMAIL_PASS').required().asString(),
   EMAIL_HOST: env.get('EMAIL_HOST').required().asString(),
+  NATS_URL: env.get('NATS_URL').required().asString(),
 });

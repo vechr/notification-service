@@ -4,6 +4,7 @@ import { MailService } from './mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailController } from './mail.controller';
 import appConstant from '@/constants/app.constant';
+import { NotificationEmailService } from '../notification-email/notification-email.service';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import appConstant from '@/constants/app.constant';
       }),
     }),
   ],
-  providers: [MailService],
+  providers: [MailService, NotificationEmailService],
   controllers: [MailController],
 })
 export class MailModule {}

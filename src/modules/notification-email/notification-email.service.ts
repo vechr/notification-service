@@ -128,6 +128,31 @@ export class NotificationEmailService {
     }
   }
 
+  async getNotificationEmailMultipleId(
+    notificationEmailIdList: string[],
+  ): Promise<NotificationEmail[]> {
+    try {
+      const result = await this.prisma.notificationEmail.findMany({
+        where: {
+          id: {
+            in: notificationEmailIdList,
+          },
+        },
+      });
+      return result;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        log.error(error.message);
+        throw new UnknownException({
+          code: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+          message: `Error unexpected!`,
+          params: { exception: error.message },
+        });
+      }
+      throw error;
+    }
+  }
+
   async getNotificationEmailById(
     notificationEmailId: string,
   ): Promise<NotificationEmail> {
