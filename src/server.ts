@@ -7,6 +7,9 @@ import appConstant from './constants/app.constant';
 import log from './shared/utils/log.util';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NatsModule } from './nats.module';
+import express from 'express';
+import { join } from 'path';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const httpServer = new Promise(async (resolve, reject) => {
   try {
@@ -16,6 +19,24 @@ const httpServer = new Promise(async (resolve, reject) => {
       new UnknownExceptionsFilter(),
       new HttpExceptionFilter(),
     );
+    app.use('/public', express.static(join(__dirname, '..', 'public')));
+    const option = {
+      customCss: `
+      .topbar-wrapper img {content:url('/public/kreMESWhite.svg'); width:200px; height:auto;}
+      .swagger-ui .topbar { background: linear-gradient(45deg, rgba(0,209,255,1) 42%, rgba(0,217,139,1) 100%); }`,
+      customfavIcon: `/public/kreMES.svg`,
+      customSiteTitle: 'kreMES API Notification Services',
+    };
+    const config = new DocumentBuilder()
+      .setTitle('Notification Service API Documentation')
+      .setDescription(
+        'This is a Notification Service for creating Metadata IoT system',
+      )
+      .setVersion('1.0.0')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('/api/notification', app, document, option);
     app.useGlobalInterceptors(new ContextInterceptor());
 
     await app

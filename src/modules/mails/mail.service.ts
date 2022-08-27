@@ -12,6 +12,7 @@ export class MailService {
   ) {}
 
   public async sendMailBulk(dto: NotificationEmailRPC): Promise<void> {
+    // console.dir(dto, { depth: null })
     const result =
       await this.notificationEmailService.getNotificationEmailMultipleId(
         dto.notificationEmailIdList,
