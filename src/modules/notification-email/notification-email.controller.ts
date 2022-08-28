@@ -13,7 +13,7 @@ import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
 import { NotificationEmailService } from './notification-email.service';
 
 @ApiTags('Notification Email')
-@Controller('notification-email')
+@Controller('email')
 export class NotificationEmailController {
   constructor(
     private readonly notificationEmailService: NotificationEmailService,
