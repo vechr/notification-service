@@ -38,7 +38,7 @@ export class NotificationEmailController {
   @ApiOperation({
     summary: 'this API is used to update email notification',
   })
-  @Patch('id')
+  @Patch(':id')
   async updateNotificationEmailById(
     @Param('id') notificationEmailId: string,
     @Body() dto: UpdateNotificationEmailDto,
@@ -57,7 +57,7 @@ export class NotificationEmailController {
   @ApiOperation({
     summary: 'this API is used to delete email notification',
   })
-  @Delete('id')
+  @Delete(':id')
   async deleteNotificationEmailById(
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {
@@ -83,7 +83,7 @@ export class NotificationEmailController {
   @ApiOperation({
     summary: 'this API is used to get all email notification',
   })
-  @Get('id')
+  @Get(':id')
   async getNotificationEmailById(
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {

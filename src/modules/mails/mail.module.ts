@@ -5,6 +5,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { MailController } from './mail.controller';
 import appConstant from '@/constants/app.constant';
 import { NotificationEmailService } from '../notification-email/notification-email.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -31,6 +32,15 @@ import { NotificationEmailService } from '../notification-email/notification-ema
         },
       }),
     }),
+    ClientsModule.register([
+      {
+        name: 'THINGS_SERVICE',
+        transport: Transport.NATS,
+        options: {
+          servers: [appConstant.NATS_URL],
+        },
+      },
+    ]),
   ],
   providers: [MailService, NotificationEmailService],
   controllers: [MailController],

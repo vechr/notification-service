@@ -4,16 +4,25 @@ import log from '@/shared/utils/log.util';
 import {
   ForbiddenException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ClientNats } from '@nestjs/microservices';
 import { NotificationEmail } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
+import {
+  CreateNotificationEmailDto,
+  DeleteEmailNotificationEventDto,
+  UpdateNotificationEmailDto,
+} from './dto';
 
 @Injectable()
 export class NotificationEmailService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject('THINGS_SERVICE') private readonly notificationClient: ClientNats,
+  ) {}
 
   async createNotificationEmail(
     dto: CreateNotificationEmailDto,
@@ -96,6 +105,17 @@ export class NotificationEmailService {
           id: notificationEmailId,
         },
       });
+
+      this.notificationClient.emit(
+        'notification.email.deleted',
+        new DeleteEmailNotificationEventDto(
+          result.id,
+          result.name,
+          result.description,
+          result.sender,
+          result.recipient,
+        ),
+      );
 
       return result;
     } catch (error) {
