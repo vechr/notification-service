@@ -719,10 +719,10 @@
     multer "1.4.4-lts.1"
     tslib "2.4.0"
 
-"@nestjs/schematics@^9.0.0", "@nestjs/schematics@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-9.0.2.tgz#0b822094b25e87dfe19bad1f6a75719bc91550a7"
-  integrity sha512-pMjdz3YVX1XwTt065oVJjVno/mdbcfoY2nGyMh9lnLkYmAaY9OprT2VASi51AfcKvUhQXbQyuhk9Vvwzr/5NcA==
+"@nestjs/schematics@^9.0.0", "@nestjs/schematics@^9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-9.0.3.tgz#175218350fb3829c9a903e980046a11950310e24"
+  integrity sha512-kZrU/lrpVd2cnK8I3ibDb3Wi1ppl3wX3U3lVWoL+DzRRoezWKkh8upEL4q0koKmuXnsmLiu3UPxFeMOrJV7TSA==
   dependencies:
     "@angular-devkit/core" "14.2.1"
     "@angular-devkit/schematics" "14.2.1"
@@ -5324,10 +5324,10 @@ pino-std-serializers@^6.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-6.0.0.tgz#4c20928a1bafca122fdc2a7a4a171ca1c5f9c526"
   integrity sha512-mMMOwSKrmyl+Y12Ri2xhH1lbzQxwwpuru9VjyJpgFIH4asSj88F2csdMwN6+M5g1Ll4rmsYghHLQJw81tgZ7LQ==
 
-pino@*, pino@^8.0.0, pino@^8.4.2:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-8.4.2.tgz#5de76e81b36e173d74244e0af4543e7ae241dbfd"
-  integrity sha512-PlXDeGhJZfAuVay+wtlS02s5j8uisQveZExYdAm9MwwxUQSz9R7Q78XtjM2tTa4sa5KJmygimZjZxXXuHgV6ew==
+pino@*, pino@^8.0.0, pino@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-8.5.0.tgz#60943fa2ec0ac4f22b1f8fde199cc2488547261e"
+  integrity sha512-PuD6sOti8Y+p9zRoNB5dibmfjfM/OU2tEtJFICxw5ulXi1d0qnq/Rt3CsR6aBEAOeyCXP+ZUfiNWW+tt55pNzg==
   dependencies:
     atomic-sleep "^1.0.0"
     fast-redact "^3.1.1"
