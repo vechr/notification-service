@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "commit": "cz",
     "build": "rm -rf .build && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "watch": "nest start --debug 0.0.0.0:9229 --watch",
@@ -55,6 +56,7 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -86,5 +88,10 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
