@@ -1,8 +1,8 @@
-import { ExceptionFilter } from '@/shared/filters/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { NotificationEmailRPC } from './dto/notification-email-rpc.dto';
 import { MailService } from './mail.service';
+import { ExceptionFilter } from '@/shared/filters/rpc-exception.filter';
 
 @Controller()
 export class MailController {

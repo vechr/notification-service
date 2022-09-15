@@ -1,4 +1,3 @@
-import SuccessResponse from '@/shared/responses/success.response';
 import {
   Body,
   Controller,
@@ -11,6 +10,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
 import { NotificationEmailService } from './notification-email.service';
+import SuccessResponse from '@/shared/responses/success.response';
 
 @ApiTags('Notification Email')
 @Controller('email')

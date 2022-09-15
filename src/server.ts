@@ -1,15 +1,15 @@
+import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import express from 'express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpModule } from './http.module';
 import UnknownExceptionsFilter from './shared/filters/unknown.filter';
 import HttpExceptionFilter from './shared/filters/http.filter';
 import ContextInterceptor from './shared/interceptors/context.interceptor';
 import appConstant from './constants/app.constant';
 import log from './shared/utils/log.util';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NatsModule } from './nats.module';
-import express from 'express';
-import { join } from 'path';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const httpServer = new Promise(async (resolve, reject) => {
   try {

@@ -1,11 +1,11 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { MailService } from './mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { NotificationEmailService } from '../notification-email/notification-email.service';
+import { MailService } from './mail.service';
 import { MailController } from './mail.controller';
 import appConstant from '@/constants/app.constant';
-import { NotificationEmailService } from '../notification-email/notification-email.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [

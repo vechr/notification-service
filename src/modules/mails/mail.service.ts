@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import appConstant from '@/constants/app.constant';
-import { NotificationEmailRPC, SendMailDto } from './dto';
 import { NotificationEmailService } from '../notification-email/notification-email.service';
+import { NotificationEmailRPC, SendMailDto } from './dto';
+import appConstant from '@/constants/app.constant';
 
 @Injectable()
 export class MailService {

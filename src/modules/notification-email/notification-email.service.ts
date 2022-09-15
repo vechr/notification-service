@@ -1,6 +1,3 @@
-import PrismaService from '@/prisma/prisma.service';
-import { UnknownException } from '@/shared/exceptions/common.exception';
-import log from '@/shared/utils/log.util';
 import {
   ForbiddenException,
   HttpStatus,
@@ -16,6 +13,9 @@ import {
   DeleteEmailNotificationEventDto,
   UpdateNotificationEmailDto,
 } from './dto';
+import log from '@/shared/utils/log.util';
+import { UnknownException } from '@/shared/exceptions/common.exception';
+import PrismaService from '@/prisma/prisma.service';
 
 @Injectable()
 export class NotificationEmailService {

@@ -1,8 +1,8 @@
-import appConstant from '@/constants/app.constant';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { NotificationEmailController } from './notification-email.controller';
 import { NotificationEmailService } from './notification-email.service';
+import appConstant from '@/constants/app.constant';
 
 @Module({
   imports: [
