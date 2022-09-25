@@ -26,10 +26,10 @@ const httpServer = new Promise(async (resolve, reject) => {
     );
     const option = {
       customCss: `
-      .topbar-wrapper img {content:url('/api/v1/notification/public/kreMESWhite.svg'); width:200px; height:auto;}
+      .topbar-wrapper img {content:url('/api/v1/notification/public/logo.svg'); width:200px; height:auto;}
       .swagger-ui .topbar { background: linear-gradient(45deg, rgba(0,209,255,1) 42%, rgba(0,217,139,1) 100%); }`,
-      customfavIcon: `/api/v1/notification/public/kreMES.svg`,
-      customSiteTitle: 'kreMES API Notification Services',
+      customfavIcon: `/api/v1/notification/public/logo.svg`,
+      customSiteTitle: 'Vechr API Notification Services',
     };
     const config = new DocumentBuilder()
       .setTitle('Notification Service API Documentation')
@@ -37,7 +37,6 @@ const httpServer = new Promise(async (resolve, reject) => {
         'This is a Notification Service for creating Metadata IoT system',
       )
       .setVersion('1.0.0')
-      .setBasePath('api/v1/notification')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

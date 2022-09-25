@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="" target="blank"><img src="https://svgshare.com/i/fmL.svg" width="320" alt="kreMES Logo" /></a>
+  <a href="" target="blank"><img src="./public/logo.svg" width="320" alt="Vechr Logo" /></a>
 </p>
 
 # Edit your `.env` file
@@ -7,12 +7,12 @@
 APP_PORT=3000
 NATS_URL=nats://nats-server:4222
 
-EMAIL_ID=support@kremes.com
-EMAIL_PASS=kreMES
+EMAIL_ID=support@vechr.com
+EMAIL_PASS=Vechr
 EMAIL_HOST=mail-dev
 EMAIL_PORT=1025
 
-DB_URL="postgresql://kreMES:123@host.docker.internal:5433/notification_db?schema=public&connect_timeout=300"
+DB_URL="postgresql://Vechr:123@host.docker.internal:5433/notification_db?schema=public&connect_timeout=300"
 ```
 
 # Notification Service

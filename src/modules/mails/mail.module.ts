@@ -21,7 +21,7 @@ import appConstant from '@/constants/app.constant';
           },
         },
         defaults: {
-          from: `"kreMES Notification" <${appConstant.EMAIL_ID}>`,
+          from: `"Vechr Notification" <${appConstant.EMAIL_ID}>`,
         },
         template: {
           dir: process.cwd() + '/templates/',
