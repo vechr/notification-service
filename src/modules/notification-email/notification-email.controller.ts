@@ -13,7 +13,7 @@ import { NotificationEmailService } from './notification-email.service';
 import SuccessResponse from '@/shared/responses/success.response';
 
 @ApiTags('Notification Email')
-@Controller('email')
+@Controller('notification/email')
 export class NotificationEmailController {
   constructor(
     private readonly notificationEmailService: NotificationEmailService,
