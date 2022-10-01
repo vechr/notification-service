@@ -25,6 +25,7 @@ const httpServer = new Promise(async (resolve, reject) => {
       defaultVersion: '1',
       type: VersioningType.URI,
     });
+    app.useGlobalInterceptors(new ContextInterceptor());
     app.use(
       '/api/notification/public',
       express.static(join(__dirname, '..', 'public')),

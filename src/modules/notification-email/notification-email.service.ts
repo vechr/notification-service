@@ -13,9 +13,12 @@ import {
   DeleteEmailNotificationEventDto,
   UpdateNotificationEmailDto,
 } from './dto';
+import { TListNotificationEmailRequestQuery } from './requests/list-notification-email.request';
 import log from '@/shared/utils/log.util';
 import { UnknownException } from '@/shared/exceptions/common.exception';
 import PrismaService from '@/prisma/prisma.service';
+import { IContext } from '@/shared/interceptors/context.interceptor';
+import { parseMeta, parseQuery } from '@/shared/utils/query.util';
 
 @Injectable()
 export class NotificationEmailService {
@@ -23,6 +26,47 @@ export class NotificationEmailService {
     private readonly prisma: PrismaService,
     @Inject('THINGS_SERVICE') private readonly notificationClient: ClientNats,
   ) {}
+
+  async list(ctx: IContext): Promise<{
+    result: NotificationEmail[];
+    meta: { count: number; total: number; page: number; totalPage: number };
+  }> {
+    console.log(ctx);
+    const query = ctx.params.query as TListNotificationEmailRequestQuery;
+
+    const { limit, offset, order, page } =
+      parseQuery<TListNotificationEmailRequestQuery>(query);
+
+    const selectOptions = {
+      orderBy: order,
+      where: query.filters.field,
+    };
+
+    const pageOptions = {
+      take: limit,
+      skip: offset,
+    };
+
+    const [total, notificationEmail] = await this.prisma.$transaction([
+      this.prisma.notificationEmail.count(selectOptions),
+      this.prisma.notificationEmail.findMany({
+        ...pageOptions,
+        ...selectOptions,
+      }),
+    ]);
+
+    const meta = parseMeta<NotificationEmail>({
+      result: notificationEmail,
+      total,
+      page,
+      limit,
+    });
+
+    return {
+      result: notificationEmail,
+      meta,
+    };
+  }
 
   async createNotificationEmail(
     dto: CreateNotificationEmailDto,

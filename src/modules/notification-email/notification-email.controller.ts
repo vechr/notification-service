@@ -3,14 +3,27 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
+  Version,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
 import { NotificationEmailService } from './notification-email.service';
+import ListNotificationEmailValidator, {
+  ListNotificationEmailQueryValidator,
+} from './validators/list-notification-email.validator';
+import ListNotificationEmailResponse from './serializers/list-notification-email.response';
 import SuccessResponse from '@/shared/responses/success.response';
+import { IContext } from '@/shared/interceptors/context.interceptor';
+import UseList from '@/shared/decorators/uselist.decorator';
+import Validator from '@/shared/decorators/validator.decorator';
+import Serializer from '@/shared/decorators/serializer.decorator';
+import { ApiFilterQuery } from '@/shared/decorators/api-filter-query.decorator';
+import Context from '@/shared/decorators/context.decorator';
 
 @ApiTags('Notification Email')
 @Controller('notification/email')
@@ -18,6 +31,18 @@ export class NotificationEmailController {
   constructor(
     private readonly notificationEmailService: NotificationEmailService,
   ) {}
+
+  @Version('2')
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @UseList()
+  @Validator(ListNotificationEmailValidator)
+  @Serializer(ListNotificationEmailResponse)
+  @ApiFilterQuery('filters', ListNotificationEmailQueryValidator)
+  public async list(@Context() ctx: IContext): Promise<SuccessResponse> {
+    const { result, meta } = await this.notificationEmailService.list(ctx);
+    return new SuccessResponse('Success get all records!', result, meta);
+  }
 
   @ApiOperation({
     summary: 'this API is used to create email notification',
