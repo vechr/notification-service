@@ -10,7 +10,7 @@ import {
   Post,
   Version,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
 import { NotificationEmailService } from './notification-email.service';
 import ListNotificationEmailValidator, {
@@ -24,8 +24,11 @@ import Validator from '@/shared/decorators/validator.decorator';
 import Serializer from '@/shared/decorators/serializer.decorator';
 import { ApiFilterQuery } from '@/shared/decorators/api-filter-query.decorator';
 import Context from '@/shared/decorators/context.decorator';
+import Authentication from '@/shared/decorators/authentication.decorator';
+import Authorization from '@/shared/decorators/authorization.decorator';
 
 @ApiTags('Notification Email')
+@ApiBearerAuth('access-token')
 @Controller('notification/email')
 export class NotificationEmailController {
   constructor(
@@ -36,6 +39,8 @@ export class NotificationEmailController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @UseList()
+  @Authentication(true)
+  @Authorization('email-notifications:read@auth')
   @Validator(ListNotificationEmailValidator)
   @Serializer(ListNotificationEmailResponse)
   @ApiFilterQuery('filters', ListNotificationEmailQueryValidator)
@@ -48,6 +53,8 @@ export class NotificationEmailController {
     summary: 'this API is used to create email notification',
   })
   @Post()
+  @Authentication(true)
+  @Authorization('email-notifications:create@auth')
   async createNotificationEmail(
     @Body() dto: CreateNotificationEmailDto,
   ): Promise<SuccessResponse> {
@@ -64,6 +71,8 @@ export class NotificationEmailController {
     summary: 'this API is used to update email notification',
   })
   @Patch(':id')
+  @Authentication(true)
+  @Authorization('email-notifications:update@auth')
   async updateNotificationEmailById(
     @Param('id') notificationEmailId: string,
     @Body() dto: UpdateNotificationEmailDto,
@@ -83,6 +92,8 @@ export class NotificationEmailController {
     summary: 'this API is used to delete email notification',
   })
   @Delete(':id')
+  @Authentication(true)
+  @Authorization('email-notifications:delete@auth')
   async deleteNotificationEmailById(
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {
@@ -100,6 +111,8 @@ export class NotificationEmailController {
     summary: 'this API is used to get email notification by id',
   })
   @Get()
+  @Authentication(true)
+  @Authorization('email-notifications:read@auth')
   async getNotificationEmails(): Promise<SuccessResponse> {
     const result = await this.notificationEmailService.getNotificationEmails();
     return new SuccessResponse('Success Get All Notification Email!', result);
@@ -109,6 +122,8 @@ export class NotificationEmailController {
     summary: 'this API is used to get all email notification',
   })
   @Get(':id')
+  @Authentication(true)
+  @Authorization('email-notifications:read@auth')
   async getNotificationEmailById(
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {
