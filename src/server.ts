@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { VersioningType } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import { HttpModule } from './http.module';
 import UnknownExceptionsFilter from './shared/filters/unknown.filter';
 import HttpExceptionFilter from './shared/filters/http.filter';
@@ -30,6 +31,7 @@ const httpServer = new Promise(async (resolve, reject) => {
       '/api/notification/public',
       express.static(join(__dirname, '..', 'public')),
     );
+    app.use(cookieParser());
     const option = {
       customCss: `
       .topbar-wrapper img {content:url('/api/notification/public/logo.svg'); width:200px; height:auto;}
