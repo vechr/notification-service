@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { VersioningType } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import { HttpModule } from './http.module';
 import UnknownExceptionsFilter from './shared/filters/unknown.filter';
 import HttpExceptionFilter from './shared/filters/http.filter';
@@ -16,7 +17,10 @@ const httpServer = new Promise(async (resolve, reject) => {
   try {
     const app = await NestFactory.create(HttpModule);
     app.setGlobalPrefix('api');
-    app.enableCors();
+    app.enableCors({
+      credentials: true,
+      origin: true,
+    });
     app.useGlobalFilters(
       new UnknownExceptionsFilter(),
       new HttpExceptionFilter(),
@@ -30,6 +34,7 @@ const httpServer = new Promise(async (resolve, reject) => {
       '/api/notification/public',
       express.static(join(__dirname, '..', 'public')),
     );
+    app.use(cookieParser());
     const option = {
       customCss: `
       .topbar-wrapper img {content:url('/api/notification/public/logo.svg'); width:200px; height:auto;}
@@ -43,6 +48,17 @@ const httpServer = new Promise(async (resolve, reject) => {
         'This is a Notification Service for creating Metadata IoT system',
       )
       .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          description: `[just text field] Please enter token in following format: Bearer <JWT>`,
+          name: 'Authorization',
+          bearerFormat: 'Bearer', // I`ve tested not to use this field, but the result was the same
+          scheme: 'Bearer',
+          type: 'http', // I`ve attempted type: 'apiKey' too
+          in: 'Header',
+        },
+        'access-token', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+      )
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
