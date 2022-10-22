@@ -56,9 +56,11 @@ export class NotificationEmailController {
   @Authentication(true)
   @Authorization('email-notifications:create@auth')
   async createNotificationEmail(
+    @Context() ctx: IContext,
     @Body() dto: CreateNotificationEmailDto,
   ): Promise<SuccessResponse> {
     const result = await this.notificationEmailService.createNotificationEmail(
+      ctx,
       dto,
     );
     return new SuccessResponse(
@@ -74,11 +76,13 @@ export class NotificationEmailController {
   @Authentication(true)
   @Authorization('email-notifications:update@auth')
   async updateNotificationEmailById(
+    @Context() ctx: IContext,
     @Param('id') notificationEmailId: string,
     @Body() dto: UpdateNotificationEmailDto,
   ): Promise<SuccessResponse> {
     const result =
       await this.notificationEmailService.updateNotificationEmailById(
+        ctx,
         notificationEmailId,
         dto,
       );
@@ -95,10 +99,12 @@ export class NotificationEmailController {
   @Authentication(true)
   @Authorization('email-notifications:delete@auth')
   async deleteNotificationEmailById(
+    @Context() ctx: IContext,
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {
     const result =
       await this.notificationEmailService.deleteNotificationEmailById(
+        ctx,
         notificationEmailId,
       );
     return new SuccessResponse(

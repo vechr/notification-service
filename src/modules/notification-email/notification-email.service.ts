@@ -8,6 +8,8 @@ import {
 import { ClientNats } from '@nestjs/microservices';
 import { NotificationEmail } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import AuditService from '../audits/audit.service';
+import { AuditAction } from '../audits/types/audit-enum.type';
 import {
   CreateNotificationEmailDto,
   DeleteEmailNotificationEventDto,
@@ -19,12 +21,14 @@ import { UnknownException } from '@/shared/exceptions/common.exception';
 import PrismaService from '@/prisma/prisma.service';
 import { IContext } from '@/shared/interceptors/context.interceptor';
 import { parseMeta, parseQuery } from '@/shared/utils/query.util';
+import { Auditable } from '@/shared/types/auditable.type';
 
 @Injectable()
 export class NotificationEmailService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject('THINGS_SERVICE') private readonly notificationClient: ClientNats,
+    @Inject('NATS_SERVICE') private readonly notificationClient: ClientNats,
+    private readonly auditService: AuditService,
   ) {}
 
   async list(ctx: IContext): Promise<{
@@ -69,6 +73,7 @@ export class NotificationEmailService {
   }
 
   async createNotificationEmail(
+    ctx: IContext,
     dto: CreateNotificationEmailDto,
   ): Promise<NotificationEmail> {
     try {
@@ -76,6 +81,12 @@ export class NotificationEmailService {
         data: {
           ...dto,
         },
+      });
+
+      await this.auditService.sendAudit(ctx, AuditAction.CREATED, {
+        id: result.id,
+        incoming: result,
+        auditable: Auditable.EMIAL_NOTIFICATION,
       });
 
       return result;
@@ -100,6 +111,7 @@ export class NotificationEmailService {
   }
 
   async updateNotificationEmailById(
+    ctx: IContext,
     notificationEmailId: string,
     dto: UpdateNotificationEmailDto,
   ): Promise<NotificationEmail> {
@@ -126,6 +138,13 @@ export class NotificationEmailService {
         },
       });
 
+      await this.auditService.sendAudit(ctx, AuditAction.UPDATED, {
+        id: result.id,
+        prev: notificationEmail,
+        incoming: result,
+        auditable: Auditable.EMIAL_NOTIFICATION,
+      });
+
       return result;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -141,6 +160,7 @@ export class NotificationEmailService {
   }
 
   async deleteNotificationEmailById(
+    ctx: IContext,
     notificationEmailId: string,
   ): Promise<NotificationEmail> {
     try {
@@ -160,6 +180,12 @@ export class NotificationEmailService {
           result.recipient,
         ),
       );
+
+      await this.auditService.sendAudit(ctx, AuditAction.DELETED, {
+        id: result.id,
+        prev: result,
+        auditable: Auditable.EMIAL_NOTIFICATION,
+      });
 
       return result;
     } catch (error) {

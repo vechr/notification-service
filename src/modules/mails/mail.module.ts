@@ -34,7 +34,7 @@ import appConstant from '@/constants/app.constant';
     }),
     ClientsModule.register([
       {
-        name: 'THINGS_SERVICE',
+        name: appConstant.NATS_SERVICE,
         transport: Transport.NATS,
         options: {
           servers: [appConstant.NATS_URL],
