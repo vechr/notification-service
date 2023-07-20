@@ -29,7 +29,7 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "^1.8.1",
+    "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/common": "^9.3.10",
     "@nestjs/core": "^9.3.10",
     "@nestjs/jwt": "^9.0.0",
