@@ -11,6 +11,7 @@ import {
   Version,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { OtelInstanceCounter, OtelMethodCounter } from 'nestjs-otel';
 import { CreateNotificationEmailDto, UpdateNotificationEmailDto } from './dto';
 import { NotificationEmailService } from './notification-email.service';
 import ListNotificationEmailValidator, {
@@ -30,6 +31,7 @@ import Authorization from '@/shared/decorators/authorization.decorator';
 @ApiTags('Notification Email')
 @ApiBearerAuth('access-token')
 @Controller('notification/email')
+@OtelInstanceCounter()
 export class NotificationEmailController {
   constructor(
     private readonly notificationEmailService: NotificationEmailService,
@@ -44,6 +46,7 @@ export class NotificationEmailController {
   @Validator(ListNotificationEmailValidator)
   @Serializer(ListNotificationEmailResponse)
   @ApiFilterQuery('filters', ListNotificationEmailQueryValidator)
+  @OtelMethodCounter()
   public async list(@Context() ctx: IContext): Promise<SuccessResponse> {
     const { result, meta } = await this.notificationEmailService.list(ctx);
     return new SuccessResponse('Success get all records!', result, meta);
@@ -55,6 +58,7 @@ export class NotificationEmailController {
   @Post()
   @Authentication(true)
   @Authorization('email-notifications:create@auth')
+  @OtelMethodCounter()
   async createNotificationEmail(
     @Context() ctx: IContext,
     @Body() dto: CreateNotificationEmailDto,
@@ -75,6 +79,7 @@ export class NotificationEmailController {
   @Patch(':id')
   @Authentication(true)
   @Authorization('email-notifications:update@auth')
+  @OtelMethodCounter()
   async updateNotificationEmailById(
     @Context() ctx: IContext,
     @Param('id') notificationEmailId: string,
@@ -98,6 +103,7 @@ export class NotificationEmailController {
   @Delete(':id')
   @Authentication(true)
   @Authorization('email-notifications:delete@auth')
+  @OtelMethodCounter()
   async deleteNotificationEmailById(
     @Context() ctx: IContext,
     @Param('id') notificationEmailId: string,
@@ -119,6 +125,7 @@ export class NotificationEmailController {
   @Get()
   @Authentication(true)
   @Authorization('email-notifications:read@auth')
+  @OtelMethodCounter()
   async getNotificationEmails(): Promise<SuccessResponse> {
     const result = await this.notificationEmailService.getNotificationEmails();
     return new SuccessResponse('Success Get All Notification Email!', result);
@@ -130,6 +137,7 @@ export class NotificationEmailController {
   @Get(':id')
   @Authentication(true)
   @Authorization('email-notifications:read@auth')
+  @OtelMethodCounter()
   async getNotificationEmailById(
     @Param('id') notificationEmailId: string,
   ): Promise<SuccessResponse> {
