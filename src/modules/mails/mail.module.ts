@@ -2,26 +2,25 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NotificationEmailService } from '../notification-email/notification-email.service';
 import { MailService } from './mail.service';
 import { MailController } from './mail.controller';
-import appConstant from '@/constants/app.constant';
+import appConfig from '@/config/app.config';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
-          host: appConstant.EMAIL_HOST,
-          port: appConstant.EMAIL_PORT,
+          host: appConfig.EMAIL_HOST,
+          port: appConfig.EMAIL_PORT,
           secure: false, // upgrade later with STARTTLS
           auth: {
-            user: appConstant.EMAIL_ID,
-            pass: appConstant.EMAIL_PASS,
+            user: appConfig.EMAIL_ID,
+            pass: appConfig.EMAIL_PASS,
           },
         },
         defaults: {
-          from: `"Vechr Notification" <${appConstant.EMAIL_ID}>`,
+          from: `"Vechr Notification" <${appConfig.EMAIL_ID}>`,
         },
         template: {
           dir: process.cwd() + '/templates/',
@@ -34,21 +33,21 @@ import appConstant from '@/constants/app.constant';
     }),
     ClientsModule.register([
       {
-        name: appConstant.NATS_SERVICE,
+        name: appConfig.NATS_SERVICE,
         transport: Transport.NATS,
         options: {
-          servers: [appConstant.NATS_URL],
+          servers: [appConfig.NATS_URL],
           maxReconnectAttempts: 10,
           tls: {
-            caFile: appConstant.NATS_CA,
-            keyFile: appConstant.NATS_KEY,
-            certFile: appConstant.NATS_CERT,
+            caFile: appConfig.NATS_CA,
+            keyFile: appConfig.NATS_KEY,
+            certFile: appConfig.NATS_CERT,
           },
         },
       },
     ]),
   ],
-  providers: [MailService, NotificationEmailService],
+  providers: [MailService],
   controllers: [MailController],
 })
 export class MailModule {}

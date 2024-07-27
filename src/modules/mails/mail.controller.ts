@@ -3,7 +3,7 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { OtelInstanceCounter, OtelMethodCounter } from 'nestjs-otel';
 import { NotificationEmailRPC } from './dto/notification-email-rpc.dto';
 import { MailService } from './mail.service';
-import { ExceptionFilter } from '@/shared/filters/rpc-exception.filter';
+import { ExceptionFilter } from '@/core/base/frameworks/shared/filters/rpc-exception.filter';
 
 @Controller()
 @OtelInstanceCounter()

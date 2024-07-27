@@ -12,18 +12,23 @@ import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
-import { PinoInstrumentation } from '@opentelemetry/instrumentation-pino';
-import appConstant from './constants/app.constant';
+import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
+import appConfig from './config/app.config';
+
+/**
+ * ENABLE THIS FOR DEBUGGING
+ */
+// import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const otelSDK = new NodeSDK({
-  serviceName: appConstant.APP_NAME,
+  serviceName: appConfig.APP_NAME,
   metricReader: new PrometheusExporter({
     port: 8081,
   }),
   spanProcessor: new BatchSpanProcessor(
     new OTLPTraceExporter({
-      url: appConstant.OTLP_HTTP_URL,
+      url: appConfig.OTLP_HTTP_URL,
     }),
   ),
   contextManager: new AsyncLocalStorageContextManager(),
@@ -41,8 +46,7 @@ const otelSDK = new NodeSDK({
   instrumentations: [
     new ExpressInstrumentation(),
     new NestInstrumentation(),
-    new PrismaInstrumentation(),
-    new PinoInstrumentation(),
+    new WinstonInstrumentation(),
   ],
 });
 
