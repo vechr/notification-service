@@ -6,7 +6,10 @@ export interface IErrorResponse {
 }
 
 export default class ErrorResponse extends BaseResponse<null, IErrorResponse> {
-  constructor(public message: string, error: IErrorResponse) {
+  constructor(
+    public message: string,
+    error: IErrorResponse,
+  ) {
     super(false, message, null, error, {});
   }
 }

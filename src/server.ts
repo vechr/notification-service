@@ -3,11 +3,13 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { VersioningType } from '@nestjs/common';
 import HttpExceptionFilter from '@filters/http.filter';
 import UnknownExceptionsFilter from '@filters/unknown.filter';
-import { AppModule } from './app.module';
 import * as expressWinston from 'express-winston';
+import { AppModule } from './app.module';
 import otelSDK from './tracing';
 import appConfig from './config/app.config';
-import log, { winstonExpressOptions } from './core/base/frameworks/shared/utils/log.util';
+import log, {
+  winstonExpressOptions,
+} from './core/base/frameworks/shared/utils/log.util';
 
 const printConfig = () => {
   log.info(`Connected to Grafana Loki: ${appConfig.LOKI_HOST}`);
@@ -88,7 +90,7 @@ const appServer = new Promise(async (resolve, reject) => {
 
 function ignoreFavicon(req: any, res: any, next: any) {
   if (req.originalUrl.includes('favicon.ico')) {
-    res.status(204).end()
+    res.status(204).end();
   }
   next();
 }
