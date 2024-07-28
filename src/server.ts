@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { VersioningType } from '@nestjs/common';
 import HttpExceptionFilter from '@filters/http.filter';
 import UnknownExceptionsFilter from '@filters/unknown.filter';
 import * as expressWinston from 'express-winston';
@@ -33,12 +32,6 @@ const appServer = new Promise(async (resolve, reject) => {
         },
       },
     });
-    await app
-      .startAllMicroservices()
-      .then(() => log.info(`Nest app NATS started at :${appConfig.NATS_URL} `));
-
-    // Set prefix api globally
-    app.setGlobalPrefix('api', { exclude: ['health', '/'] });
 
     // Enable CORS for security
     app.enableCors({
@@ -51,12 +44,6 @@ const appServer = new Promise(async (resolve, reject) => {
       new UnknownExceptionsFilter(),
       new HttpExceptionFilter(),
     );
-
-    // Versioning of default URL V1
-    app.enableVersioning({
-      defaultVersion: '1',
-      type: VersioningType.URI,
-    });
 
     // Ignore Favicon
     app.use(ignoreFavicon);
