@@ -1,17 +1,19 @@
-import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import express from 'express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { VersioningType } from '@nestjs/common';
-import cookieParser from 'cookie-parser';
+import HttpExceptionFilter from '@filters/http.filter';
+import UnknownExceptionsFilter from '@filters/unknown.filter';
+import * as expressWinston from 'express-winston';
 import { AppModule } from './app.module';
-import UnknownExceptionsFilter from './shared/filters/unknown.filter';
-import HttpExceptionFilter from './shared/filters/http.filter';
-import ContextInterceptor from './shared/interceptors/context.interceptor';
-import appConstant from './constants/app.constant';
-import log from './shared/utils/log.util';
 import otelSDK from './tracing';
+import appConfig from './config/app.config';
+import log, {
+  winstonExpressOptions,
+} from './core/base/frameworks/shared/utils/log.util';
+
+const printConfig = () => {
+  log.info(`Connected to Grafana Loki: ${appConfig.LOKI_HOST}`);
+  log.info(`Connected to Grafana Tempo: ${appConfig.OTLP_HTTP_URL}`);
+};
 
 const appServer = new Promise(async (resolve, reject) => {
   try {
@@ -21,23 +23,15 @@ const appServer = new Promise(async (resolve, reject) => {
     app.connectMicroservice<MicroserviceOptions>({
       transport: Transport.NATS,
       options: {
-        servers: [appConstant.NATS_URL],
+        servers: [appConfig.NATS_URL],
         maxReconnectAttempts: 10,
         tls: {
-          caFile: appConstant.NATS_CA,
-          keyFile: appConstant.NATS_KEY,
-          certFile: appConstant.NATS_CERT,
+          caFile: appConfig.NATS_CA,
+          keyFile: appConfig.NATS_KEY,
+          certFile: appConfig.NATS_CERT,
         },
       },
     });
-    await app
-      .startAllMicroservices()
-      .then(() =>
-        log.info(`Nest app NATS started at :${appConstant.NATS_URL} `),
-      );
-
-    // Set prefix api globally
-    app.setGlobalPrefix('api', { exclude: ['health', '/'] });
 
     // Enable CORS for security
     app.enableCors({
@@ -51,57 +45,36 @@ const appServer = new Promise(async (resolve, reject) => {
       new HttpExceptionFilter(),
     );
 
-    // Versioning of default URL V1
-    app.enableVersioning({
-      defaultVersion: '1',
-      type: VersioningType.URI,
+    // Ignore Favicon
+    app.use(function (
+      req: { originalUrl: string },
+      res: { sendStatus: (arg0: number) => any },
+      next: () => void,
+    ) {
+      if (
+        req.originalUrl &&
+        req.originalUrl.split('/').pop() === 'favicon.ico'
+      ) {
+        return res.sendStatus(204);
+      }
+      next();
     });
 
-    // Use Global Interceptors
-    app.useGlobalInterceptors(new ContextInterceptor());
+    const port = process.env.PORT ?? appConfig.APP_PORT;
 
-    // Serve public images
-    app.use(
-      '/api/notification/public',
-      express.static(join(__dirname, '..', 'public')),
-    );
-
-    // Use Cookie for http only
-    app.use(cookieParser());
-    const option = {
-      customCss: `
-      .topbar-wrapper img {content:url('/api/notification/public/logo.svg'); width:200px; height:auto;}
-      .swagger-ui .topbar { background: linear-gradient(45deg, rgba(0,209,255,1) 42%, rgba(0,217,139,1) 100%); }`,
-      customfavIcon: `/api/notification/public/logo.svg`,
-      customSiteTitle: 'Vechr API Notification Services',
-    };
-    const config = new DocumentBuilder()
-      .setTitle('Notification Service API Documentation')
-      .setDescription(
-        'This is a Notification Service for creating Metadata IoT system',
-      )
-      .setVersion('1.0.0')
-      .addBearerAuth(
-        {
-          description: `[just text field] Please enter token in following format: Bearer <JWT>`,
-          name: 'Authorization',
-          bearerFormat: 'Bearer', // I`ve tested not to use this field, but the result was the same
-          scheme: 'Bearer',
-          type: 'http', // I`ve attempted type: 'apiKey' too
-          in: 'Header',
-        },
-        'access-token', // This name here is important for matching up with @ApiBearerAuth() in your controller!
-      )
-      .build();
-
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/api/notification', app, document, option);
+    // express-winston logger makes sense BEFORE the router
+    app.use(expressWinston.logger(winstonExpressOptions));
 
     await app
-      .listen(appConstant.APP_PORT)
-      .then(() =>
-        log.info(`Nest app http started at PORT: ${appConstant.APP_PORT}`),
-      );
+      .startAllMicroservices()
+      .then(() => log.info(`Nest app NATS started at :${appConfig.NATS_URL} `));
+
+    await app
+      .listen(port)
+      .then(() => log.info(`Nest app http started at PORT: ${port}`));
+
+    // print config
+    printConfig();
 
     resolve(true);
   } catch (error) {
@@ -110,7 +83,6 @@ const appServer = new Promise(async (resolve, reject) => {
 });
 
 (async function () {
-  if (appConstant.OTLP_HTTP_URL && appConstant.OTLP_HTTP_URL != '')
-    otelSDK.start();
+  if (appConfig.OTLP_HTTP_URL && appConfig.OTLP_HTTP_URL != '') otelSDK.start();
   await Promise.all([appServer]);
 })();

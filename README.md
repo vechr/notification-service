@@ -19,7 +19,6 @@ DB_URL="postgresql://Vechr:123@host.docker.internal:5433/notification_db?schema=
 
 ```bash
 yarn install
-yarn prisma:sync
 yarn db:migrate
 yarn db:studio
 yarn watch
